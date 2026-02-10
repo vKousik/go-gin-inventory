@@ -26,7 +26,6 @@ func (h *OrderHandler) GetAll(c *gin.Context) {
 		if errors.Is(err, customErrors.ErrNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": "no orders found",
-				"data":    nil,
 			})
 			return
 		}

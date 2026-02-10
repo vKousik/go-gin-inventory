@@ -26,7 +26,6 @@ func (h *TaskHandler) GetAll(c *gin.Context) {
 		if errors.Is(err, customErrors.ErrNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": "no tasks found",
-				"data":    nil,
 			})
 			return
 		}

@@ -10,7 +10,6 @@ import (
 	"github.com/vKousik/go-gin-inventory/internal/domain"
 	"github.com/vKousik/go-gin-inventory/internal/domain/customErrors"
 	"github.com/vKousik/go-gin-inventory/internal/usecase"
-	"gorm.io/gorm"
 )
 
 type ProductHandler struct {
@@ -27,10 +26,9 @@ func (h *ProductHandler) GetAll(c *gin.Context) {
 	products, err := h.uc.GetAll(ctx)
 	if err != nil {
 
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(err, customErrors.ErrNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": "no products found",
-				"data":    nil,
 			})
 			return
 		}

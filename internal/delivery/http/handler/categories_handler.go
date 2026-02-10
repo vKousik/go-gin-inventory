@@ -27,7 +27,6 @@ func (h *CategoryHandler) GetAll(c *gin.Context) {
 		if errors.Is(err, customErrors.ErrNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": "no categories found",
-				"data":    nil,
 			})
 			return
 		}
