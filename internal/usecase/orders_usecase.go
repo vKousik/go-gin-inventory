@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/vKousik/go-gin-inventory/internal/domain"
+	"github.com/vKousik/go-gin-inventory/internal/domain/customErrors"
 )
 
 type OrderUsecase struct {
@@ -15,5 +16,12 @@ func NewOrderUsecase(repo domain.OrderRepository) *OrderUsecase {
 }
 
 func (u *OrderUsecase) GetAll(ctx context.Context) ([]domain.Order, error) {
-	return u.repo.GetAll(ctx)
+	orders, err := u.repo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(orders) == 0 {
+		return nil, customErrors.ErrNotFound
+	}
+	return orders, nil
 }

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 	"github.com/vKousik/go-gin-inventory/internal/domain"
@@ -10,15 +9,29 @@ import (
 )
 
 type ProductUsecase struct {
-	repo domain.ProductRepository
+	repo         domain.ProductRepository
+	categoryRepo domain.CategoryRepository
 }
 
-func NewProductUsecase(repo domain.ProductRepository) *ProductUsecase {
-	return &ProductUsecase{repo: repo}
+func NewProductUsecase(
+	repo domain.ProductRepository,
+	categoryRepo domain.CategoryRepository,
+) *ProductUsecase {
+	return &ProductUsecase{
+		repo:         repo,
+		categoryRepo: categoryRepo,
+	}
 }
 
 func (u *ProductUsecase) GetAll(ctx context.Context) ([]domain.Product, error) {
-	return u.repo.GetAll(ctx)
+	products, err := u.repo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(products) == 0 {
+		return nil, customErrors.ErrNotFound
+	}
+	return products, nil
 }
 func (u *ProductUsecase) Create(ctx context.Context, product *domain.Product) error {
 	product.ID = uuid.New()
@@ -39,11 +52,16 @@ func (u *ProductUsecase) Create(ctx context.Context, product *domain.Product) er
 		return customErrors.ErrInvalidCategoryID
 	}
 
-	// persist
+	exists, err := u.categoryRepo.Exists(ctx, product.CategoryID.String())
+	if err != nil {
+		return customErrors.ErrInternalServer
+	}
+
+	if !exists {
+		return customErrors.ErrInvalidCategoryID
+	}
+
 	if err := u.repo.Create(ctx, product); err != nil {
-		if errors.Is(err, customErrors.ErrNotFound) {
-			return customErrors.ErrInvalidCategoryID
-		}
 		return customErrors.ErrInternalServer
 	}
 

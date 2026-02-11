@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/vKousik/go-gin-inventory/internal/domain"
-	"github.com/vKousik/go-gin-inventory/internal/domain/customErrors"
 )
 
 type taskRepository struct {
@@ -42,10 +41,6 @@ func (r *taskRepository) GetAll(
 
 	if err := r.db.WithContext(ctx).Table("orders").Find(&orders).Error; err != nil {
 		return nil, nil, nil, err
-	}
-
-	if len(products) == 0 && len(categories) == 0 && len(orders) == 0 {
-		return nil, nil, nil, customErrors.ErrNotFound
 	}
 
 	return products, categories, orders, nil

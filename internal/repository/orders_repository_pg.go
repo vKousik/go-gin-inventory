@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/vKousik/go-gin-inventory/internal/domain"
-	"github.com/vKousik/go-gin-inventory/internal/domain/customErrors"
 )
 
 type orderRepository struct {
@@ -26,10 +25,6 @@ func (r *orderRepository) GetAll(ctx context.Context) ([]domain.Order, error) {
 
 	if err != nil {
 		return nil, err
-	}
-
-	if len(orders) == 0 {
-		return nil, customErrors.ErrNotFound
 	}
 
 	return orders, nil

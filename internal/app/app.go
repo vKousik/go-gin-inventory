@@ -19,7 +19,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	taskRepo := repository.NewTaskRepository(db)
 
 	// usecases
-	productUC := usecase.NewProductUsecase(productRepo)
+	productUC := usecase.NewProductUsecase(productRepo, categoryRepo)
 	orderUC := usecase.NewOrderUsecase(orderRepo)
 	categoryUC := usecase.NewCategoryUsecase(categoryRepo)
 	taskUC := usecase.NewTaskUsecase(taskRepo)

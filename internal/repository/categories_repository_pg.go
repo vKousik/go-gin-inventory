@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/vKousik/go-gin-inventory/internal/domain"
-	"github.com/vKousik/go-gin-inventory/internal/domain/customErrors"
 )
 
 type categoryRepository struct {
@@ -27,10 +26,19 @@ func (r *categoryRepository) GetAll(ctx context.Context) ([]domain.Category, err
 	if err != nil {
 		return nil, err
 	}
+	return categories, nil
+}
+func (r *categoryRepository) Exists(ctx context.Context, id string) (bool, error) {
+	var count int64
 
-	if len(categories) == 0 {
-		return nil, customErrors.ErrNotFound
+	err := r.db.WithContext(ctx).
+		Table("categories").
+		Where("id = ?", id).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
 	}
 
-	return categories, nil
+	return count > 0, nil
 }
