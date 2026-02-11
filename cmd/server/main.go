@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/vKousik/go-gin-inventory/database"
 	"github.com/vKousik/go-gin-inventory/internal/app"
+	"github.com/vKousik/go-gin-inventory/internal/infrastructure/database"
 )
 
 func main() {
